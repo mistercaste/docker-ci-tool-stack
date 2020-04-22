@@ -1,0 +1,87 @@
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code"
+  numExecutors: 2
+  disableRememberMe: true
+  crumbIssuer: "standard"
+  remotingSecurity:
+    enabled: true
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "password"
+        - id: "user"
+          password: "password"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Read:authenticated"
+        - "Overall/Administer:admin"
+security:
+  apiToken:
+    usageStatisticsEnabled: false
+  queueItemAuthenticator:
+    authenticators:
+      - global:
+          strategy: "triggeringUsersAuthorizationStrategy"
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              description: "Nexus Admin User"
+              id: "nexus"
+              username: "admin"
+              password: "admin123"
+              scope: "GLOBAL"
+          - basicSSHUserPrivateKey:
+              scope: "GLOBAL"
+              id: "50ff7d29-65eb-4396-9476-f823734a25af"
+              username: "admin"
+              passphrase: "lMNOKgKXWKJwk6oT/wZiww=="
+              description: "Sonar Token"
+tool:
+  git:
+    installations:
+      - name: "Default"
+        home: "/usr/bin/git"
+  jdk:
+    installations:
+      - name: "JDK 8"
+        properties:
+          - installSource:
+              installers:
+                - adoptOpenJdkInstaller:
+                    id: "jdk8u252-b09"
+  maven:
+    installations:
+      - name: "Maven 3.3.3"
+        properties:
+          - installSource:
+              installers:
+                - maven:
+                    id: "3.3.3"
+unclassified:
+  location:
+    url: http://jenkins:18080
+jobs:
+  - script: >
+      freeStyleJob('sonarqube-scanner-test') {
+          jdk('open-jdk11')
+          scm {
+              git {
+                  branches('master')
+                  remote {
+                      url('https://github.com/SonarSource/sonar-scanning-examples.git')
+                      credentials('credentials-github')
+                  }
+              }
+          }
+          steps {
+              maven {
+                mavenInstallation('maven-3')
+                goals('clean verify sonar:sonar -f sonarqube-scanner-maven/maven-basic/pom.xml')
+              }
+          }
+      }

@@ -27,19 +27,14 @@ COPY jobs/job-dsl-seed-job.xml /usr/share/jenkins/ref/jobs/job-dsl-seed-job/conf
 ############################################
 # Configure Jenkins
 ############################################
-# Jenkins settings
-COPY config/config.xml /usr/share/jenkins/ref/config.xml
 
-# Jenkins Settings, i.e. Maven, Groovy, ...
-COPY config/hudson.tasks.Maven.xml /usr/share/jenkins/ref/hudson.tasks.Maven.xml
-COPY config/hudson.plugins.groovy.Groovy.xml /usr/share/jenkins/ref/hudson.plugins.groovy.Groovy.xml
+# Environment variables (i.e. needed to trigger JCasC - Jenkins Configuration as Code)
+ENV CASC_JENKINS_CONFIG="/var/jenkins_home/jcasc/jenkins.yml"
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+
+# Jenkins Settings, i.e. Maven
 COPY config/maven-global-settings-files.xml /usr/share/jenkins/ref/org.jenkinsci.plugins.configfiles.GlobalConfigFiles.xml
 
-# SSH Keys & Credentials
-COPY config/credentials.xml /usr/share/jenkins/ref/credentials.xml
+# SSH Keys
 COPY config/ssh-keys/cd-demo /usr/share/jenkins/ref/.ssh/id_rsa
 COPY config/ssh-keys/cd-demo.pub /usr/share/jenkins/ref/.ssh/id_rsa.pub
-
-# tell Jenkins that no banner prompt for pipeline plugins is needed
-# see: https://github.com/jenkinsci/docker#preinstalling-plugins
-RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
