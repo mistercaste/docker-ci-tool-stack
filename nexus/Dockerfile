@@ -54,3 +54,6 @@ CMD java \
   -cp 'conf/:lib/*' \
   ${JAVA_OPTS} \
   org.sonatype.nexus.bootstrap.Launcher ${LAUNCHER_CONF}
+
+# Print the initial [admin] password
+RUN echo -e "\n********************\n" && echo "Initial [admin] password is:" && cat admin.passwd && echo -e "\n********************\n" && sleep 30
