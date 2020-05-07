@@ -64,7 +64,7 @@ tool:
                     id: "3.3.3"
 unclassified:
   location:
-    url: http://jenkins:18080
+    url: http://jenkins:8080
 jobs:
   - script: >
       freeStyleJob('sonarqube-scanner-test') {
