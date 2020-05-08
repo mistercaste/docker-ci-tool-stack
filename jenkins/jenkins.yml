@@ -1,5 +1,5 @@
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code"
+  systemMessage: "Jenkins configured by Jenkins Configuration as Code (JCasC Plugin)"
   numExecutors: 2
   disableRememberMe: true
   crumbIssuer: "standard"
@@ -67,21 +67,30 @@ unclassified:
     url: http://jenkins:8080
 jobs:
   - script: >
-      freeStyleJob('sonarqube-scanner-test') {
-          jdk('open-jdk11')
+      job("SEED") {
+          description("Generates Jenkins Jobs using Job DSL scripts")
+          logRotator {
+              numToKeep(10)
+          }
+          triggers {
+                cron('H 11 * * *')
+          }
+          keepDependencies(false)
           scm {
               git {
-                  branches('master')
                   remote {
-                      url('https://github.com/SonarSource/sonar-scanning-examples.git')
-                      credentials('credentials-github')
+                      github("marcelbirkner/docker-ci-tool-stack", "https")
                   }
+                  branch("*/master")
               }
           }
           steps {
-              maven {
-                mavenInstallation('maven-3')
-                goals('clean verify sonar:sonar -f sonarqube-scanner-maven/maven-basic/pom.xml')
+              dsl {
+                  external("jenkins/seedjobs/*.groovy")
+                  ignoreExisting(false)
+                  removeAction("DELETE")
+                  removeViewAction("DELETE")
+                  lookupStrategy("JENKINS_ROOT")
               }
           }
       }
