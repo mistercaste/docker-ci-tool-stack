@@ -2,7 +2,7 @@
 #
 # Simply execute this script to setup the full toolchain:
 #
-# curl -sSL https://raw.githubusercontent.com/marcelbirkner/docker-ci-tool-stack/master/setup.sh | bash -s
+# setup.sh | bash -s
 #
 # Prerequisites:
 # - Docker & Docker Toolbox v1.10
@@ -15,7 +15,7 @@ echo "Setup environment"
 eval $(docker-machine env docker-ci-tools)
 
 echo "Checkout Git Repository"
-git clone git@github.com:marcelbirkner/docker-ci-tool-stack.git
+git clone git@github.com:mistercaste/docker-ci-tool-stack.git
 cd docker-ci-tool-stack
 
 echo "Startup Docker Compose"
