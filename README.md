@@ -7,7 +7,6 @@ A __docker-compose__ based environment generator for testing CI/CD tools. :neckb
 > WARNING - This solution is not production ready. Use at your own risk.
 
 ### Requirements
-- Linux (...what else?)
 - docker-compose > 1.25
 
 ### Getting started
@@ -66,6 +65,6 @@ docker-compose -f docker-compose-selenium.yml up
 
 Original version by Marcel Birkner: [marcelbirkner/docker-ci-tool-stack](https://github.com/marcelbirkner/docker-ci-tool-stack).
 
-Article: [Continuous Integration Platform Using Docker Containers: Jenkins, SonarQube, Nexus, GitLab](https://blog.codecentric.de/en/2015/10/continuous-integration-platform-using-docker-container-jenkins-sonarqube-nexus-gitlab)
+Original article: [Continuous Integration Platform Using Docker Containers: Jenkins, SonarQube, Nexus, GitLab](https://blog.codecentric.de/en/2015/10/continuous-integration-platform-using-docker-container-jenkins-sonarqube-nexus-gitlab)
 
 This version introduced new features like Jenkins JCasC, up to date dependencies, usage of TAGs, etc... as well as a brief kickoff documentation.
