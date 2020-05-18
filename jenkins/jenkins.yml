@@ -65,32 +65,47 @@ tool:
 unclassified:
   location:
     url: http://jenkins:8080
+  globallibraries:
+    libraries:
+      - defaultVersion: "refs/tags/1.0"
+        name: "jenkins-lib"
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "https://github.com/mistercaste/jenkins-libraries.git"
 jobs:
   - script: >
-      job("SEED") {
-          description("Generates Jenkins Jobs using Job DSL scripts")
-          logRotator {
-              numToKeep(10)
+      pipelineJob("pipeline-conference-app") {
+        description("Generates Jenkins Jobs using Job DSL scripts")
+        disabled(true)
+        definition {
+          cps {
+            script('''
+      @Library('jenkins-lib') _
+
+        libPipelineConference {
+        applicationFolder = 'app'
+        branch = 'master'
+        mavenGlobalSettingsId = 'maven-global-settings'}
+      ''')
           }
-          triggers {
-                cron('H 11 * * *')
+        }
+      }
+  - script: >
+      pipelineJob("pipeline-conference-monitor") {
+        description("Generates Jenkins Jobs using Job DSL scripts")
+        disabled(true)
+        definition {
+          cps {
+            script('''
+      @Library('jenkins-lib') _
+
+        libPipelineConference {
+        applicationFolder = 'monitoring'
+        branch = 'master'
+        mavenGlobalSettingsId = 'maven-global-settings'}
+      ''')
           }
-          keepDependencies(false)
-          scm {
-              git {
-                  remote {
-                      github("mistercaste/docker-ci-tool-stack", "https")
-                  }
-                  branch("*/master")
-              }
-          }
-          steps {
-              dsl {
-                  external("jenkins/seedjobs/*.groovy")
-                  ignoreExisting(false)
-                  removeAction("DELETE")
-                  removeViewAction("DELETE")
-                  lookupStrategy("JENKINS_ROOT")
-              }
-          }
+        }
       }
